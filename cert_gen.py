@@ -1,6 +1,5 @@
 from PIL import Image, ImageFont, ImageDraw
 import pandas
-import pdf2image
 import os.path
 from os import path
 import time 
@@ -26,6 +25,8 @@ choice = '''
 [2] Double Checking E-Certificate
 [3] Generate single E-Certificate
 [4] Adding Signature to Certificate (in development)
+[5] Generate E-certification (with IC)
+[6] Generate single E-certification (with IC)
 '''
 
 print(banner)
@@ -41,6 +42,54 @@ while dir_check2 == False:
     
 name = pandas.read_excel(ex_file)
 name_list = name['Name'].tolist()
+
+def generateWithIC():
+  dir_check = False
+  ic_list = name['IC'].tolist()
+
+  while dir_check == False:
+      cert_path = input("Enter your template path: ")
+      dir_check = path.exists(cert_path)
+      if dir_check == False:
+        print("\033[1;31;40mFile does not exist \033[1;37;40m")
+  
+  
+  filepath = input("Save to (folder): ")
+  o_folder = os.system("mkdir " + filepath)
+  print("\033[1;33;40mTotal name : " + str(len(name_list)) + "\033[1;37;40m")
+  time.sleep(5)
+
+  for i, x in zip(name_list, ic_list):
+    x = str(x)
+    cert = Image.open(cert_path)
+    draw = ImageDraw.Draw(cert)
+    font = ImageFont.truetype("arial.ttf",90)
+    w,h = font.getsize(i)
+    w2,h2 = font.getsize(x)
+    draw.text(((3500-w)/2,(2300-h)/2), i.upper(), (0,0,0), font=font)
+    draw.text(((3500-w2)/2,(2500-h2)/2), "("+x+")", (0,0,0), font=font)
+    print("\033[1;32;40mGenerating certificate for",i,"\033[1;37;40m")
+    cert.save(filepath + "/cert_" + i + ".pdf")
+
+def singleGenerateWithIC(): #for generate single certificate
+  dir_check = False
+  name = input("\nFullname: ")
+  ic = input("\IC Number: ")
+  while dir_check == False:
+      cert_path = input("Enter your template path: ")
+      dir_check = path.exists(cert_path)
+      if dir_check == False:
+        print("\033[1;31;40mFile does not exist \033[1;37;40m")
+  
+  cert = Image.open(cert_path)
+  draw = ImageDraw.Draw(cert)
+  font = ImageFont.truetype("arial.ttf",90)
+  w,h = font.getsize(name)
+  w2, h2 = font.getsize(ic)
+  draw.text(((3500-w)/2,(2300-h)/2), name, (0,0,0), font=font)
+  draw.text(((3500-w2)/2,(2500-h2)/2), "("+str(ic)+")", (0,0,0), font=font)
+  print("\033[1;32;40mGenerating certificate for",name,"\033[1;37;40m")
+  cert.save("cert_" + name + ".pdf")
 
 
 def generate_cert(): #for generating multiple certificate
@@ -97,7 +146,7 @@ def singleGenerate(): #for generate single certificate
   draw = ImageDraw.Draw(cert)
   font = ImageFont.truetype("arial.ttf",90)
   w,h = font.getsize(name)
-  draw.text(((3500-w)/2,(2500-h)/2), name, (0,0,0), font=font)
+  draw.text(((4500-w)/2,(2500-h)/2), name, (0,0,0), font=font)
   print("\033[1;32;40mGenerating certificate for",name,"\033[1;37;40m")
   cert.save("cert_" + name + ".pdf")
 
@@ -120,10 +169,14 @@ def addSignature(): #adding a signature
 u_choice = int(input("Choice: "))
 if u_choice == 1:
   generate_cert()
-if u_choice == 2:
+elif u_choice == 2:
   check_cert()
-if u_choice == 3:
+elif u_choice == 3:
   singleGenerate()
-if u_choice == 4:
+elif u_choice == 4:
   addSignature()
+elif u_choice == 5:
+  generateWithIC()
+elif u_choice == 6:
+  singleGenerateWithIC()
 
