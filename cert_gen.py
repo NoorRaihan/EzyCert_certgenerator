@@ -50,10 +50,11 @@ def readJSON():
     for dat in data['coordinate']:
       x = dat['x-axis']
       y = dat['y-axis']
+      fontsize = dat['fontsize']
   
   return x, y
 
-def generateWithIC():
+def generateWithIC(x,y):
   dir_check = False
   ic_list = name['IC'].tolist()
 
@@ -81,7 +82,7 @@ def generateWithIC():
     print("\033[1;32;40mGenerating certificate for",i,"\033[1;37;40m")
     cert.save(filepath + "/cert_" + i + ".pdf")
 
-def singleGenerateWithIC(): #for generate single certificate
+def singleGenerateWithIC(x,y): #for generate single certificate
   dir_check = False
   name = input("\nFullname: ")
   ic = input("\IC Number: ")
@@ -97,7 +98,7 @@ def singleGenerateWithIC(): #for generate single certificate
   w,h = font.getsize(name)
   w2, h2 = font.getsize(ic)
   draw.text((x,y), name, (0,0,0), anchor="mm",font=font)
-  draw.text((x,y+(y*0.1))), "("+str(ic)+")", (0,0,0), anchor="mm",font=font)
+  draw.text((x,y+(y*0.1)), "("+str(ic)+")", (0,0,0), anchor="mm",font=font)
   print("\033[1;32;40mGenerating certificate for",name,"\033[1;37;40m")
   cert.save("cert_" + name + ".pdf")
 
@@ -188,9 +189,9 @@ elif u_choice == 3:
 elif u_choice == 4:
   addSignature()
 elif u_choice == 5:
-  generateWithIC()
+  generateWithIC(x,y)
 elif u_choice == 6:
-  singleGenerateWithIC()
+  singleGenerateWithIC(x,y)
 elif u_choice == 7:
   os.system('python3 coordinate.py')
 

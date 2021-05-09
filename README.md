@@ -8,5 +8,10 @@ More update and bug fixed soon!
 2. Make sure your certeficate design only use center align text.
 3. If you need to insert ic it will reposition itself under the name text.
 
-## Author
+## IMPORTANT
+1. In excel file make sure all the name are under 'Name' section and all ic section are under 'IC' section
+
+![](picsample/excel.png)
+
+### Author
 NOOR RAIHAN
