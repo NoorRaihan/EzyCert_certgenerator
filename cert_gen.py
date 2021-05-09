@@ -69,15 +69,15 @@ def generateWithIC():
   print("\033[1;33;40mTotal name : " + str(len(name_list)) + "\033[1;37;40m")
   time.sleep(5)
 
-  for i, x in zip(name_list, ic_list):
-    x = str(x)
+  for i, z in zip(name_list, ic_list):
+    z = str(z)
     cert = Image.open(cert_path)
     draw = ImageDraw.Draw(cert)
     font = ImageFont.truetype("arial.ttf",90)
     w,h = font.getsize(i)
-    w2,h2 = font.getsize(x)
-    draw.text((x,y), i.upper(), (0,0,0), anchor="mm",font=font)
-    draw.text((x,(y+200)), "("+x+")", (0,0,0), font=font)
+    w2,h2 = font.getsize(z)
+    draw.text((x,y), i, (0,0,0), anchor="mm",font=font)
+    draw.text((x,(y+100)), "("+z+")", (0,0,0), anchor="mm",font=font)
     print("\033[1;32;40mGenerating certificate for",i,"\033[1;37;40m")
     cert.save(filepath + "/cert_" + i + ".pdf")
 
@@ -96,8 +96,8 @@ def singleGenerateWithIC(): #for generate single certificate
   font = ImageFont.truetype("arial.ttf",90)
   w,h = font.getsize(name)
   w2, h2 = font.getsize(ic)
-  draw.text(((3500-w)/2,(2300-h)/2), name, (0,0,0), anchor="mm",font=font)
-  draw.text(((3500-w2)/2,(2500-h2)/2), "("+str(ic)+")", (0,0,0), font=font)
+  draw.text((x,y), name, (0,0,0), anchor="mm",font=font)
+  draw.text((x,y+100), "("+str(ic)+")", (0,0,0), anchor="mm",font=font)
   print("\033[1;32;40mGenerating certificate for",name,"\033[1;37;40m")
   cert.save("cert_" + name + ".pdf")
 

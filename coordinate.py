@@ -8,9 +8,16 @@ import os.path
 from os import path
 import json
 
-image_path = input("Enter template path: ")
+dir_check = False
+while dir_check == False:
+      image_path = input("Enter your template path: ")
+      dir_check = path.exists(image_path)
+      if dir_check == False:
+        print("\033[1;31;40mFile does not exist \033[1;37;40m")
+
+
 root = Tk()
-img = Image.open("cert_alumni.jpg")
+img = Image.open(image_path)
 img = img.resize((877,620), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(img)
 
