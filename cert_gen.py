@@ -77,7 +77,7 @@ def generateWithIC():
     w,h = font.getsize(i)
     w2,h2 = font.getsize(z)
     draw.text((x,y), i, (0,0,0), anchor="mm",font=font)
-    draw.text((x,(y+100)), "("+z+")", (0,0,0), anchor="mm",font=font)
+    draw.text((x,(y+(y*0.1))), "("+z+")", (0,0,0), anchor="mm",font=font)
     print("\033[1;32;40mGenerating certificate for",i,"\033[1;37;40m")
     cert.save(filepath + "/cert_" + i + ".pdf")
 
@@ -97,7 +97,7 @@ def singleGenerateWithIC(): #for generate single certificate
   w,h = font.getsize(name)
   w2, h2 = font.getsize(ic)
   draw.text((x,y), name, (0,0,0), anchor="mm",font=font)
-  draw.text((x,y+100), "("+str(ic)+")", (0,0,0), anchor="mm",font=font)
+  draw.text((x,y+(y*0.1))), "("+str(ic)+")", (0,0,0), anchor="mm",font=font)
   print("\033[1;32;40mGenerating certificate for",name,"\033[1;37;40m")
   cert.save("cert_" + name + ".pdf")
 

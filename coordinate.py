@@ -18,17 +18,21 @@ while dir_check == False:
 
 root = Tk()
 img = Image.open(image_path)
-img = img.resize((877,620), Image.ANTIALIAS)
+width, height = img.size
+width = int(width/4)
+height = int(height/4)
+img = img.resize((width,height), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(img)
 
 
 
-def writeJson(x,y):
+def writeJson(x,y,fontsize):
     data = {}
     data['coordinate'] = []
     data['coordinate'].append({
         'x-axis' : x,
-        'y-axis' : y 
+        'y-axis' : y, 
+        'fontsize' : fontsize
     })
     with open('coordinate.json','w') as output:
         json.dump(data, output)
@@ -43,21 +47,31 @@ def getCoordinate(event):
     singleGenerate(x, y)
     
 def singleGenerate(x,y): #for generate single certificate
-  dir_check = False
-  test = "THIS IS A TEST NAME FOO GG BOII"
-  cert = Image.open(image_path)
-  draw = ImageDraw.Draw(cert)
-  font = ImageFont.truetype("arial.ttf",90)
-  w,h = font.getsize(test)
-  draw.text((x,y), test, (0,0,0),anchor="mm",font=font)
-  cert.show()
-  ask = input("confirm? [y/n]: ")
-  if ask == "y":
-    writeJson(x, y)
-  else:
-      pass
+    dir_check = False
+    test = "THIS IS A TEST NAME FOO GG BOII"
+    test2 = "00000000000"
+    cert = Image.open(image_path)
+    draw = ImageDraw.Draw(cert)
+    fontsize = 1
+    font = ImageFont.truetype("arial.ttf",fontsize)
 
-canv = Canvas(root,width="1240", height="1754")
+    while(font.getsize(test)[0] < cert.size[0]) and (font.getsize(test)[1] < cert.size[1]):
+        fontsize +=1
+        font = ImageFont.truetype("arial.ttf",fontsize)
+
+    
+    fontsize = int(fontsize/2)
+    font = ImageFont.truetype("arial.ttf",fontsize)
+    draw.text((x,y), test, (0,0,0),anchor="mm",font=font)
+    draw.text((x,(y+(y*0.1))), "("+str(test2)+")", (0,0,0), anchor="mm",font=font)
+    cert.show()
+    ask = input("confirm? [y/n]: ")
+    if ask == "y":
+        writeJson(x, y, fontsize)
+    else:
+        pass
+
+canv = Canvas(root,width=str(width), height=str(height))
 canv.pack()
 canv.create_image(0,0,image=image, anchor=NW)
 canv.bind('<Button-1>',getCoordinate)
