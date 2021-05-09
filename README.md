@@ -12,7 +12,7 @@ More update and bug fixed soon!
 ## IMPORTANT
 1. In excel file make sure all the name are under 'Name' section and all ic section are under 'IC' section
 
-![](picsample/excel.png)
+![](https://github.com/NoorRaihan/EzyCert_certgenerator/blob/master/picsample/excel.PNG)
 
 ### Author
 NOOR RAIHAN
