@@ -1,8 +1,10 @@
 from PIL import Image, ImageFont, ImageDraw
 import pandas
 import os.path
+import os
 from os import path
 import time 
+import json
 
 banner = ''' 
   ______            _____          _   
@@ -14,9 +16,6 @@ banner = '''
               __/ |                    
              |___/                     
         AUTHOR : NOOR RAIHAN
-  --FOR PERSONAL & COMPASS USE ONLY-- 
-  [Always Generate Signature First]
- # RENAME ur excel to filename.xlsx #
           
     '''
 
@@ -27,6 +26,7 @@ choice = '''
 [4] Adding Signature to Certificate (in development)
 [5] Generate E-certification (with IC)
 [6] Generate single E-certification (with IC)
+[7] Set new coordinate
 '''
 
 print(banner)
@@ -42,6 +42,16 @@ while dir_check2 == False:
     
 name = pandas.read_excel(ex_file)
 name_list = name['Name'].tolist()
+
+#read JSON file to get coordinate
+def readJSON():
+  with open('coordinate.json') as jsonfile:
+    data = json.load(jsonfile)
+    for dat in data['coordinate']:
+      x = dat['x-axis']
+      y = dat['y-axis']
+  
+  return x, y
 
 def generateWithIC():
   dir_check = False
@@ -66,8 +76,8 @@ def generateWithIC():
     font = ImageFont.truetype("arial.ttf",90)
     w,h = font.getsize(i)
     w2,h2 = font.getsize(x)
-    draw.text(((3500-w)/2,(2300-h)/2), i.upper(), (0,0,0), font=font)
-    draw.text(((3500-w2)/2,(2500-h2)/2), "("+x+")", (0,0,0), font=font)
+    draw.text((x,y), i.upper(), (0,0,0), anchor="mm",font=font)
+    draw.text((x,(y+200)), "("+x+")", (0,0,0), font=font)
     print("\033[1;32;40mGenerating certificate for",i,"\033[1;37;40m")
     cert.save(filepath + "/cert_" + i + ".pdf")
 
@@ -86,13 +96,13 @@ def singleGenerateWithIC(): #for generate single certificate
   font = ImageFont.truetype("arial.ttf",90)
   w,h = font.getsize(name)
   w2, h2 = font.getsize(ic)
-  draw.text(((3500-w)/2,(2300-h)/2), name, (0,0,0), font=font)
+  draw.text(((3500-w)/2,(2300-h)/2), name, (0,0,0), anchor="mm",font=font)
   draw.text(((3500-w2)/2,(2500-h2)/2), "("+str(ic)+")", (0,0,0), font=font)
   print("\033[1;32;40mGenerating certificate for",name,"\033[1;37;40m")
   cert.save("cert_" + name + ".pdf")
 
 
-def generate_cert(): #for generating multiple certificate
+def generate_cert(x,y): #for generating multiple certificate
   dir_check = False
 
   while dir_check == False:
@@ -111,7 +121,7 @@ def generate_cert(): #for generating multiple certificate
       draw = ImageDraw.Draw(cert)
       font = ImageFont.truetype("arial.ttf",90)
       w,h = font.getsize(i)
-      draw.text(((3500-w)/2,(2500-h)/2), i, (0,0,0), font=font)
+      draw.text((x,y), i.upper(), (0,0,0), anchor="mm",font=font)
       print("\033[1;32;40mGenerating certificate for",i,"\033[1;37;40m")
       cert.save(filepath + "/cert_" + i + ".pdf")
 
@@ -133,7 +143,7 @@ def check_cert(): #for checking all the cert based on excel namelist
     else:
         print("\033[1;31;40mCertificate for",i,"is missing \033[1;37;40m")
 
-def singleGenerate(): #for generate single certificate
+def singleGenerate(x,y): #for generate single certificate
   dir_check = False
   name = input("\nFullname: ")
   while dir_check == False:
@@ -142,11 +152,11 @@ def singleGenerate(): #for generate single certificate
       if dir_check == False:
         print("\033[1;31;40mFile does not exist \033[1;37;40m")
   
-  cert = Image.open(cert_path)
+  cert = Image.open(cert_path) 
   draw = ImageDraw.Draw(cert)
   font = ImageFont.truetype("arial.ttf",90)
   w,h = font.getsize(name)
-  draw.text(((4500-w)/2,(2500-h)/2), name, (0,0,0), font=font)
+  draw.text((x,y), name, (0,0,0), anchor="mm",font=font)
   print("\033[1;32;40mGenerating certificate for",name,"\033[1;37;40m")
   cert.save("cert_" + name + ".pdf")
 
@@ -165,18 +175,22 @@ def addSignature(): #adding a signature
   print("\033[1;32;40mAdding Signature to Certificate\033[1;37;40m")
   background.save("new_signature_template.jpg")
 
- 
+
+x,y = readJSON()
+
 u_choice = int(input("Choice: "))
 if u_choice == 1:
-  generate_cert()
+  generate_cert(x,y)
 elif u_choice == 2:
   check_cert()
 elif u_choice == 3:
-  singleGenerate()
+  singleGenerate(x,y)
 elif u_choice == 4:
   addSignature()
 elif u_choice == 5:
   generateWithIC()
 elif u_choice == 6:
   singleGenerateWithIC()
+elif u_choice == 7:
+  os.system('python3 coordinate.py')
 
