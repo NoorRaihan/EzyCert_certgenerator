@@ -1,4 +1,5 @@
-# COMPASS_certgen
+# EzyCert_certgenerator
+EzyCer is an e-certification generator...
 More update and bug fixed soon!
 
 ## PYTHON 3 IS USED!
