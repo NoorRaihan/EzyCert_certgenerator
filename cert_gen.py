@@ -52,9 +52,9 @@ def readJSON():
       y = dat['y-axis']
       fontsize = dat['fontsize']
   
-  return x, y
+  return x, y, fontsize
 
-def generateWithIC(x,y):
+def generateWithIC(x,y,fontsize):
   dir_check = False
   ic_list = name['IC'].tolist()
 
@@ -74,15 +74,16 @@ def generateWithIC(x,y):
     z = str(z)
     cert = Image.open(cert_path)
     draw = ImageDraw.Draw(cert)
-    font = ImageFont.truetype("arial.ttf",90)
+    font = ImageFont.truetype("arial.ttf",fontsize)
     w,h = font.getsize(i)
     w2,h2 = font.getsize(z)
     draw.text((x,y), i, (0,0,0), anchor="mm",font=font)
     draw.text((x,(y+(y*0.1))), "("+z+")", (0,0,0), anchor="mm",font=font)
     print("\033[1;32;40mGenerating certificate for",i,"\033[1;37;40m")
     cert.save(filepath + "/cert_" + i + ".pdf")
+  os.system('pause')
 
-def singleGenerateWithIC(x,y): #for generate single certificate
+def singleGenerateWithIC(x,y,fontsize): #for generate single certificate
   dir_check = False
   name = input("\nFullname: ")
   ic = input("\IC Number: ")
@@ -94,16 +95,17 @@ def singleGenerateWithIC(x,y): #for generate single certificate
   
   cert = Image.open(cert_path)
   draw = ImageDraw.Draw(cert)
-  font = ImageFont.truetype("arial.ttf",90)
+  font = ImageFont.truetype("arial.ttf",fontsize)
   w,h = font.getsize(name)
   w2, h2 = font.getsize(ic)
   draw.text((x,y), name, (0,0,0), anchor="mm",font=font)
   draw.text((x,y+(y*0.1)), "("+str(ic)+")", (0,0,0), anchor="mm",font=font)
   print("\033[1;32;40mGenerating certificate for",name,"\033[1;37;40m")
   cert.save("cert_" + name + ".pdf")
+  os.system('pause')
 
 
-def generate_cert(x,y): #for generating multiple certificate
+def generate_cert(x,y,fontsize): #for generating multiple certificate
   dir_check = False
 
   while dir_check == False:
@@ -120,11 +122,12 @@ def generate_cert(x,y): #for generating multiple certificate
   for i in name_list:
       cert = Image.open(cert_path)
       draw = ImageDraw.Draw(cert)
-      font = ImageFont.truetype("arial.ttf",90)
+      font = ImageFont.truetype("arial.ttf",fontsize)
       w,h = font.getsize(i)
       draw.text((x,y), i.upper(), (0,0,0), anchor="mm",font=font)
       print("\033[1;32;40mGenerating certificate for",i,"\033[1;37;40m")
       cert.save(filepath + "/cert_" + i + ".pdf")
+  os.system('pause')
 
 
 def check_cert(): #for checking all the cert based on excel namelist
@@ -136,6 +139,7 @@ def check_cert(): #for checking all the cert based on excel namelist
     if dir_check == False:
       print("\033[1;31;40mDirectory does not exist \033[1;37;40m")
 
+  miss = 0
   for i in name_list:
     cert_name = filepath + "/cert_" + i +".pdf"
     ext = path.exists(cert_name)
@@ -143,23 +147,27 @@ def check_cert(): #for checking all the cert based on excel namelist
         print("\033[1;32;40mCertificate for",i,"is exist\033[1;37;40m")
     else:
         print("\033[1;31;40mCertificate for",i,"is missing \033[1;37;40m")
+        miss +=1
+  print("\n",miss, "file missing")
+  os.system('pause')
 
-def singleGenerate(x,y): #for generate single certificate
+def singleGenerate(x,y,fontsize): #for generate single certificate
   dir_check = False
   name = input("\nFullname: ")
   while dir_check == False:
       cert_path = input("Enter your template path: ")
       dir_check = path.exists(cert_path)
       if dir_check == False:
-        print("\033[1;31;40mFile does not exist \033[1;37;40m")
+        print("\033[1;31;40mFile does not exist","\033[1;37;40m")
   
   cert = Image.open(cert_path) 
   draw = ImageDraw.Draw(cert)
-  font = ImageFont.truetype("arial.ttf",90)
+  font = ImageFont.truetype("arial.ttf",fontsize)
   w,h = font.getsize(name)
   draw.text((x,y), name, (0,0,0), anchor="mm",font=font)
   print("\033[1;32;40mGenerating certificate for",name,"\033[1;37;40m")
   cert.save("cert_" + name + ".pdf")
+  os.system('pause')
 
 def addSignature(): #adding a signature
   dir_check = False
@@ -177,21 +185,21 @@ def addSignature(): #adding a signature
   background.save("new_signature_template.jpg")
 
 
-x,y = readJSON()
+x,y,fontsize = readJSON()
 
 u_choice = int(input("Choice: "))
 if u_choice == 1:
-  generate_cert(x,y)
+  generate_cert(x,y,fontsize)
 elif u_choice == 2:
   check_cert()
 elif u_choice == 3:
-  singleGenerate(x,y)
+  singleGenerate(x,y,fontsize)
 elif u_choice == 4:
   addSignature()
 elif u_choice == 5:
-  generateWithIC(x,y)
+  generateWithIC(x,y,fontsize)
 elif u_choice == 6:
-  singleGenerateWithIC(x,y)
+  singleGenerateWithIC(x,y,fontsize)
 elif u_choice == 7:
-  os.system('python3 coordinate.py')
+  os.system('.\coordinate.exe')
 
